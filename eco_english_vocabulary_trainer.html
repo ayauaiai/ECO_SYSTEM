@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eco English — Vocabulary Trainer</title>
+<style>
+:root{--green:#526b22;--lime:#eaf0d9;--ink:#20251a;--muted:#68705c;--paper:#fbfcf8;--line:#e2e7d8}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#f4f7eb,#fff 55%,#edf2e2);font-family:Inter,Arial,sans-serif;color:var(--ink)}
+.wrap{max-width:920px;margin:auto;padding:28px 18px 50px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-weight:900;color:var(--green);letter-spacing:-1px;font-size:24px}.tag{font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--line);padding:8px 12px;border-radius:20px}
+h1{font-size:clamp(28px,5vw,44px);margin:30px 0 8px;letter-spacing:-1.5px}.sub{color:var(--muted);margin:0 0 24px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tabs button,.btn{border:1px solid var(--line);background:white;color:var(--ink);padding:11px 16px;border-radius:12px;font-weight:700;cursor:pointer}.tabs button.active,.btn.primary{background:var(--green);color:white;border-color:var(--green)}
+.panel{background:white;border:1px solid var(--line);border-radius:22px;padding:clamp(18px,4vw,30px);box-shadow:0 12px 35px #31420e0c}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.count{color:var(--muted);font-size:14px}.progress{height:8px;background:#edf0e7;border-radius:10px;overflow:hidden;margin:14px 0 22px}.bar{height:100%;width:0;background:#829d43;transition:width .2s}
+.flash{min-height:290px;display:flex;align-items:center;justify-content:center;text-align:center;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:28px;cursor:pointer;position:relative}
+.flash .hint{position:absolute;top:16px;left:18px;color:var(--muted);font-size:12px}.word{font-size:clamp(32px,7vw,54px);font-weight:900;color:var(--green);margin-bottom:14px}.definition{font-size:clamp(17px,3vw,22px);line-height:1.5;max-width:650px;margin:auto}.kk{font-size:18px;color:#657044;margin-top:15px}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:18px}.btn:disabled{opacity:.4;cursor:not-allowed}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}.choice{text-align:left;white-space:normal;line-height:1.35;min-height:62px}.choice.correct{border-color:#5c8a35;background:#eff7e8}.choice.wrong{border-color:#c56a5c;background:#fff0ed}
+.question{font-size:22px;font-weight:800;line-height:1.4;margin:20px 0}.small{font-size:13px;color:var(--muted)}input{width:100%;padding:15px;border:1px solid var(--line);border-radius:12px;font-size:17px;margin:10px 0}
+.feedback{min-height:28px;margin-top:12px;font-weight:700}.search{max-width:260px;padding:10px 12px;margin:0;border:1px solid var(--line);border-radius:10px}
+.list{display:grid;gap:8px;margin-top:16px}.item{padding:14px;border:1px solid var(--line);border-radius:13px;display:grid;grid-template-columns:1fr 1.4fr;gap:12px}.item b{color:var(--green)}.empty{color:var(--muted);padding:20px;text-align:center}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.item{grid-template-columns:1fr;gap:5px}.wrap{padding:20px 13px 35px}}
+</style></head>
+<body><main class="wrap">
+<div class="top"><div class="brand">🌿 ECO ENGLISH</div><div class="tag">ENGLISH • ҚАЗАҚША</div></div>
+<h1>Learn. Practice. Remember.</h1><p class="sub">Табиғат пен қоршаған орта тақырыбындағы 33 сөзді жатта.</p>
+<div class="tabs">
+<button class="active" data-mode="cards">Карточкалар</button><button data-mode="quiz">Тест</button><button data-mode="write">Жазып тексеру</button><button data-mode="list">Сөздік</button>
+</div>
+<section class="panel" id="app"></section>
+</main>
+<script>
+const words = [
+["ecosystem","a community of living things, both large and small","Тірі ағзалар мен олардың бір-бірімен және қоршаған ортамен байланысқан табиғи жүйесі."],
+["biodegradable packaging","packaging that can easily be decomposed by organisms such as bacteria, or by sunlight, sea, water, etc.","Бактериялар, күн сәулесі, теңіз немесе су әсерінен табиғи жолмен ыдырайтын қаптама."],
+["greenhouse gases","gases such as carbon dioxide, carbon monoxide, sulfur dioxide, and methane","Атмосферада жылуды ұстап қалатын газдар; мысалы, көмірқышқыл газы мен метан."],
+["global warming","the heating up of the earth’s atmosphere by pollution","Ластану мен парниктік газдардың әсерінен Жер атмосферасының жылынуы."],
+["rainforest","thick wooded land in tropical regions where the precipitation is very high","Жауын-шашын өте көп түсетін тропикалық аймақтағы қалың орман."],
+["erosion","the gradual wearing away of soil","Топырақтың біртіндеп бұзылып, шайылып немесе желмен ұшып кетуі."],
+["deforestation","the cutting down of forests","Ормандарды кесу және орман алқаптарын жою."],
+["drought","a long period with little or no rain","Жаңбыр өте аз жауатын немесе мүлде жаумайтын ұзақ кезең."],
+["flood","a large amount of water covering land","Құрлықтың үлкен аумағын судың басуы."],
+["storm","severe weather with wind, rain, or snow","Қатты жел, жаңбыр немесе қармен қатар жүретін күшті дауылды ауа райы."],
+["hurricane","a powerful tropical storm","Өте күшті тропикалық дауыл."],
+["humidity","the amount of water vapor in the air","Ауа құрамындағы су буының мөлшері."],
+["avalanche","a large mass of snow, ice, and rocks that suddenly falls down a mountain","Таудан кенеттен төмен қарай құлайтын қардың, мұздың және тастардың үлкен массасы."],
+["renewable","able to be naturally replaced or replenished; for example, solar energy is a renewable source of power","Табиғи жолмен қайта қалпына келетін; мысалы, күн энергиясы."],
+["sustainable","using natural resources in a way that does not use them up or harm the environment","Табиғи ресурстарды тауыспайтын және қоршаған ортаға зиян келтірмейтін тәсілмен пайдалану."],
+["organic","cultivated naturally, without using any chemical fertilizers or pesticides","Химиялық тыңайтқыштар мен пестицидтерді қолданбай, табиғи жолмен өсірілген."],
+["genetically modified (GM)","altered at a molecular level so as to change certain characteristics which can be inherited","Тұқым қуалайтын кейбір қасиеттерін өзгерту үшін молекулалық деңгейде өзгертілген."],
+["contaminated","made dirty by something being added to it","Қандай да бір зиянды заттың қосылуы салдарынан ластанған."],
+["acid rain","polluted precipitation which kills trees","Ағаштарға зиян келтіретін ластанған жауын-шашын."],
+["emissions","gases and other substances released into the air","Ауаға бөлінетін газдар мен басқа да заттар."],
+["fossil fuels","fuels which are the remains of plants and animals","Ежелгі өсімдіктер мен жануарлардың қалдықтарынан түзілген отын."],
+["mammal","an animal that feeds milk to its young","Баласын сүтімен қоректендіретін жануар."],
+["reptile","a cold-blooded animal with scales","Денесі қабыршақпен қапталған, салқынқанды жануар."],
+["bird","an animal with feathers and wings","Қауырсыны мен қанаты бар жануар."],
+["fish","an animal that lives in water","Суда тіршілік ететін жануар."],
+["predator","an animal that hunts other animals","Басқа жануарларды аулап қоректенетін жануар."],
+["species","a group or type of living thing; for example, a species of frog","Тірі ағзалардың белгілі бір тобы немесе биологиялық түрі."],
+["extinction","the complete disappearance of a species","Белгілі бір биологиялық түрдің толығымен жойылып кетуі."],
+["environmentalists","people concerned with protecting the environment","Қоршаған ортаны қорғауға алаңдайтын және оны қорғауға атсалысатын адамдар."],
+["to protect","to keep someone or something safe from harm","Біреуді немесе бір нәрсені зияннан қорғау."],
+["to preserve","to keep something as it is and prevent it from being damaged or destroyed","Бір нәрсені бастапқы қалпында сақтап, бүлінуіне немесе жойылуына жол бермеу."],
+["to conserve","to use something carefully so that it is not wasted or lost","Бір нәрсені ысырап етпей, ұқыпты пайдалану және сақтау."],
+["conservation","the protection of nature and natural resources","Табиғат пен табиғи ресурстарды қорғау және сақтау."]
+];
+let mode="cards", index=0, flipped=false, order=[...words.keys()], score=0, answered=0, current=null, locked=false, wrong=[];
+const app=document.getElementById("app");
+const shuffle=a=>{let b=[...a];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b};
+const esc=s=>s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+function setMode(m){mode=m;document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("active",b.dataset.mode===m));index=0;flipped=false;score=0;answered=0;wrong=[];order=shuffle([...words.keys()]);render()}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+function progress(){return `<div class="row"><span class="count">${mode==="cards"?"Карточка": "Орындалуы"}: ${Math.min(index+1,words.length)} / ${words.length}</span><span class="count">Дұрыс жауап: ${score}</span></div><div class="progress"><div class="bar" style="width:${Math.min(index,words.length)/words.length*100}%"></div></div>`}
+function render(){
+ if(mode==="cards"){let w=words[order[index]];app.innerHTML=progress()+`<div class="flash" id="flip"><span class="hint">КАРТОЧКАНЫ АУДАРУ ҮШІН БАС</span>${!flipped?`<div><div class="word">${esc(w[0])}</div><div class="small">English word</div></div>`:`<div><div class="definition">${esc(w[1])}</div><div class="kk">${esc(w[2])}</div></div>`}</div><div class="actions"><button class="btn" id="prev" ${index===0?"disabled":""}>← Артқа</button><button class="btn" id="shuffle">Араластыру</button><button class="btn primary" id="next">${index===words.length-1?"Қайта бастау":"Келесі →"}</button></div>`;
+ document.getElementById("flip").onclick=()=>{flipped=!flipped;render()};document.getElementById("prev").onclick=()=>{index=Math.max(0,index-1);flipped=false;render()};document.getElementById("next").onclick=()=>{index=index===words.length-1?0:index+1;flipped=false;render()};document.getElementById("shuffle").onclick=()=>{order=shuffle([...words.keys()]);index=0;flipped=false;render()};
+ } else if(mode==="quiz"){quizRender()} else if(mode==="write"){writeRender()} else {listRender()}
+}
+function pickQuestion(){current=order[index%order.length];locked=false}
+function quizRender(){
+ if(index>=words.length){app.innerHTML=`<div class="small">ТЕСТ АЯҚТАЛДЫ</div><h2>Нәтиже: ${score} / ${words.length}</h2><p>Қате жауаптар: ${wrong.length}</p><button class="btn primary" id="again">Қайта тапсыру</button>${wrong.length?`<div class="list">${wrong.map(i=>`<div class="item"><b>${words[i][0]}</b><span>${words[i][2]}</span></div>`).join("")}</div>`:""} `;document.getElementById("again").onclick=()=>setMode("quiz");return}
+ let w=words[order[index]], opts=shuffle([w[0],...shuffle(words.filter(x=>x!==w).map(x=>x[0])).slice(0,3)]);
+ app.innerHTML=progress()+`<div class="small">ДҰРЫС СӨЗДІ ТАҢДА</div><div class="question">${esc(w[1])}</div><div class="small">Қазақша: ${esc(w[2])}</div><div class="grid">${opts.map(o=>`<button class="btn choice" data-answer="${esc(o)}">${esc(o)}</button>`).join("")}</div><div class="feedback" id="feedback"></div><div class="actions"><button class="btn primary" id="continue" disabled>Келесі →</button></div>`;
+ document.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{if(locked)return;locked=true;let ok=b.dataset.answer===w[0];if(ok)score++;else wrong.push(order[index]);document.querySelectorAll(".choice").forEach(x=>{if(x.dataset.answer===w[0])x.classList.add("correct");else if(x===b)x.classList.add("wrong");x.disabled=true});document.getElementById("feedback").textContent=ok?"Дұрыс! Жарайсың!":"Дұрыс жауап: "+w[0];document.getElementById("continue").disabled=false;document.getElementById("continue").onclick=()=>{index++;render()}});
+}
+function writeRender(){
+ if(index>=words.length){app.innerHTML=`<h2>Жаттығу аяқталды!</h2><h2>${score} / ${words.length}</h2><p>Қате сөздер саны: ${wrong.length}</p><button class="btn primary" id="again">Қайта бастау</button>`;document.getElementById("again").onclick=()=>setMode("write");return}
+ let w=words[order[index]];
+ app.innerHTML=progress()+`<div class="small">АҒЫЛШЫНША СӨЗДІ ЖАЗ</div><div class="question">${esc(w[2])}</div><div class="small">English definition: ${esc(w[1])}</div><input id="answer" placeholder="Type the English word..." autocomplete="off"><div class="actions"><button class="btn primary" id="check">Тексеру</button><button class="btn" id="show">Жауабын көрсету</button></div><div class="feedback" id="feedback"></div><div class="actions"><button class="btn primary" id="continue" hidden>Келесі →</button></div>`;
+ const input=document.getElementById("answer");input.focus();input.onkeydown=e=>{if(e.key==="Enter")document.getElementById("check").click()};
+ function finish(show){if(locked)return;locked=true;let ok=input.value.trim().toLowerCase()===w[0].toLowerCase();if(ok)score++;else wrong.push(order[index]);document.getElementById("feedback").textContent=show?"Дұрыс жауап: "+w[0]:(ok?"Дұрыс! Жарайсың!":"Дұрыс жауап: "+w[0]);input.disabled=true;document.getElementById("check").disabled=true;document.getElementById("show").disabled=true;let c=document.getElementById("continue");c.hidden=false;c.onclick=()=>{index++;render()}}
+ document.getElementById("check").onclick=()=>finish(false);document.getElementById("show").onclick=()=>finish(true);
+}
+function listRender(){
+ app.innerHTML=`<div class="row"><div><h2 style="margin:0">Барлық сөздер</h2><div class="small">${words.length} vocabulary cards</div></div><input class="search" id="search" placeholder="Сөзді іздеу..."></div><div class="list" id="list">${words.map(w=>`<div class="item"><div><b>${esc(w[0])}</b><div class="small">${esc(w[1])}</div></div><div>${esc(w[2])}</div></div>`).join("")}</div>`;
+ document.getElementById("search").oninput=e=>{let q=e.target.value.toLowerCase();document.querySelectorAll(".item").forEach(el=>el.style.display=el.textContent.toLowerCase().includes(q)?"grid":"none")};
+}
+render();
+</script></body></html>
